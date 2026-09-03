@@ -1,0 +1,51 @@
+{
+  "name": "aimpoint-bench",
+  "version": "0.1.0",
+  "authored": "2026-09-03",
+  "purpose": "Companion task set for aimpoint. Aimpoint is the eval framework; this repo is the material that proves the framework can produce safety-aligned, beneficial evaluations. Pattern follows terminal-bench / terminal-bench-science: env stays lean in its own repo, tasks live here.",
+  "aimpoint_repo": "https://github.com/aaygan29/aimpoint",
+  "aimpoint_min_version": "0.1.0",
+  "packs": {
+    "safety_evals": {
+      "path": "safety_evals/",
+      "shape": "scenarios plugging into aimpoint's Scenario schema",
+      "current_content": [
+        {
+          "id": "biosecurity",
+          "path": "safety_evals/biosecurity/",
+          "cases": 15,
+          "adjudication_type": "restricted / clear / context_dependent",
+          "consumes": "aimpoint.environments.ai_safety.safety_judgment",
+          "digest_files": ["taxonomy_ext.json", "corpus_biosec.json"]
+        }
+      ]
+    },
+    "capability_tasks": {
+      "path": "capability_tasks/",
+      "shape": "task specifications (100 today) across 10 biomedical domains x 5 difficulty tiers",
+      "current_content": [
+        {
+          "id": "biomedical_100",
+          "path": "capability_tasks/catalog.json",
+          "tasks": 100,
+          "domains": 10,
+          "difficulty_tiers": 5
+        }
+      ]
+    },
+    "harbor_gated_tasks": {
+      "path": "harbor_gated_tasks/",
+      "shape": "CompileBench/Harbor-format task dirs, each safety-gated",
+      "current_content": [
+        {"id": "dual-use-target-triage", "adapts": "drug-target-selection"},
+        {"id": "clinical-abstention-under-shift", "adapts": "mri-diagnosis-classification"},
+        {"id": "screening-tripwire-clustering", "adapts": "cancer-cell-identification"}
+      ]
+    }
+  },
+  "contract": {
+    "no_model_judge_on_headline": "Every pass/fail signal in this repo is a typed field compared to a frozen adjudication, or a numeric threshold recomputed by the grader. No task calls an LLM as a scorer.",
+    "baselines_fail_by_construction": "Every pack ships trivial baselines (always_refuse, always_clear, always_diagnose, always_none, always_proceed) that fail on at least one case in the pack. This is what makes the reference score meaningful.",
+    "argue_beneficial": "Every task specification carries an offensive-analogue clause explaining why the trained capability does not carry over to harm. Dual-use-adjacent slots are refusal tasks whose grader never touches operational content."
+  }
+}
